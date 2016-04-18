@@ -21,14 +21,10 @@ static char *buttons[] = {
 static int8_t selected_button = 13; //Currently selected button, starts on '5'
 
 static bool operator_entered = false; //Has the operator been entered yet
-//static bool entering_decimal = false; //Is the user currently entering a decimal value
 static bool num1_is_ans = false; //Is the previous result in num1? Used to allow further calculations on result.
 static char num1[MAX_LENGTH] = ""; //First operand
 static char num2[MAX_LENGTH] = ""; //Second operand
 static char result_text[MAX_LENGTH] = ""; //Results text layer buffer string
-/*static char *num1 = num1_a;
-static char *num2 = num2_a;
-static char *result_text = result_text_a;*/
 static uint8_t operator = 0; //Operator, where 0 is +, 1 is -, 2 is *, 3 is /, 4 is ^
 
 //Update handler for the buttons layer
@@ -76,40 +72,46 @@ static void up_down_handler(ClickRecognizerRef recognizer, void *context){
   layer_mark_dirty(s_buttons_layer);
 }
 
+//Enteres the contents of the currently selected button into the currently edited number
 static void enter(){
   char *num = operator_entered ? num2 : num1; //Create a pointer to the currnetly edited number
-  strcat(num, buttons[selected_button]);
+  strcat(num, buttons[selected_button]); //Add needed character to the end of the string
   text_layer_set_text(s_result_text_layer, num); //Display num
 }
 
+//Set the operator
 static void enter_operator(uint8_t id){
   operator = id; //Set operator to operator id
   operator_entered = true;
   text_layer_set_text(s_result_text_layer, buttons[selected_button]); //Display operator
 }
 
+//Backspace. Clears whole number if full is true
 static void clear(bool full){
-  char *num = operator_entered ? num2 : num1;
-  if(full) 
-    *num = 0; 
+  char *num = operator_entered ? num2 : num1; //Create a pointer to the currnetly edited number
+  if(full)
+    *num = 0;
   else 
     num[strlen(num)-1] = 0;
   text_layer_set_text(s_result_text_layer, num);
 }
 
+//Switch the number's sign.
 static void switch_sign(){
   bool overflow = false; //Overflow flag
-  char *str_num = operator_entered ? num2 : num1; //Get pointer to currently edited number
-  fixed num = str_to_fixed(str_num, &overflow);
+  char *str_num = operator_entered ? num2 : num1; //Get pointer to currently edited number string
+  fixed num = str_to_fixed(str_num, &overflow); //Convert to number
   num = fixed_mult(num, int_to_fixed(-1), &overflow); //Multiply by -1
   if(!overflow){
-    fixed_repr(num, str_num, MAX_LENGTH);
+    fixed_repr(num, str_num, MAX_LENGTH); //Convert back to string
     text_layer_set_text(s_result_text_layer, str_num); //Display number
   }
 }
 
+//Calculate result, display it and reset
 static void calculate(){
   bool overflow = false; //Overflow flag
+  //Convert operands to numbers
   fixed lhs = str_to_fixed(num1, &overflow);
   fixed rhs = str_to_fixed(num2, &overflow);
   fixed result = 0;
@@ -145,9 +147,9 @@ static void calculate(){
     text_layer_set_text(s_result_text_layer, "Overflow Error"); //Display message on overflow
   }
   else{
-    fixed_repr(result, result_text, MAX_LENGTH);
+    fixed_repr(result, result_text, MAX_LENGTH); //Convert result to string
     text_layer_set_text(s_result_text_layer, result_text); //Display result
-    strcpy(num1, result_text);
+    strcpy(num1, result_text); //Copy result into num1
     num1_is_ans = true;
   }
 }
