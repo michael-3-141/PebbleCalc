@@ -1,0 +1,32 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Michael E.",
+    "enableMultiJS": true,
+    "longName": "Calculator",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/appicon.png",
+                "menuIcon": true,
+                "name": "APP_ICON_IDENTIFIER",
+                "targetPlatforms": null,
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Calculator",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "3a239ae0-adc5-4d40-b871-6fbcd8c37e7c",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
