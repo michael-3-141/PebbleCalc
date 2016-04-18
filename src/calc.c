@@ -30,13 +30,8 @@ static uint8_t operator = 0; //Operator, where 0 is +, 1 is -, 2 is *, 3 is /, 4
 //Update handler for the buttons layer
 static void button_layer_update(Layer *layer, GContext *ctx) {
   //Set up colors
-  #if defined(PBL_COLOR)
-    graphics_context_set_stroke_color(ctx, GColorCobaltBlue);
-    graphics_context_set_fill_color(ctx, GColorOxfordBlue);
-  #elif defined(PBL_BW)
-    graphics_context_set_stroke_color(ctx, GColorBlack);
-    graphics_context_set_fill_color(ctx, GColorBlack);
-  #endif
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_fill_color(ctx, GColorBlack);
   //Set font
   GFont font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   //Nested loop. 5 rows of 4
@@ -47,12 +42,20 @@ static void button_layer_update(Layer *layer, GContext *ctx) {
       if( (y*4 + x) == selected_button ){ //If currently rendered button is the selected button
         //Change the text color and draw a filled rectangle
         graphics_context_set_text_color(ctx, GColorWhite);
+        #if defined(PBL_COLOR)
+          graphics_context_set_fill_color(ctx, GColorOrange);
+        #endif
         graphics_fill_rect(ctx, rect_bounds, 2, GCornersAll);
       }
       else { //For all other buttons
         //Use a black text color and draw an empty rectangle
         graphics_context_set_text_color(ctx, GColorBlack);
-        graphics_draw_round_rect(ctx, rect_bounds, 2);
+        #if defined(PBL_COLOR)
+          graphics_context_set_fill_color(ctx, GColorChromeYellow);
+          graphics_fill_rect(ctx, rect_bounds, 2, GCornersAll);
+        #elif defined(PBL_BW)
+          graphics_draw_round_rect(ctx, rect_bounds, 2);
+        #endif
       }
       //Define text bounds
       GRect text_bounds = GRect(2 + (x*36), 40 + (y*26), 32, 19);
