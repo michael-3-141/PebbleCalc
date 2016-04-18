@@ -78,8 +78,10 @@ static void up_down_handler(ClickRecognizerRef recognizer, void *context){
 //Enteres the contents of the currently selected button into the currently edited number
 static void enter(){
   char *num = operator_entered ? num2 : num1; //Create a pointer to the currnetly edited number
-  strcat(num, buttons[selected_button]); //Add needed character to the end of the string
-  text_layer_set_text(s_result_text_layer, num); //Display num
+  if(strlen(num) < MAX_LENGTH-1){ //Make sure string is smaller than the max length (-1 to exclude null character)
+    strcat(num, buttons[selected_button]); //Add needed character to the end of the string
+    text_layer_set_text(s_result_text_layer, num); //Display num
+  }
 }
 
 //Set the operator
